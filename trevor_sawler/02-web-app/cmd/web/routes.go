@@ -14,8 +14,11 @@ func (app *application) routes() http.Handler {
 	mux.Use(middleware.Recoverer)
 
 	// register routes
+	mux.Get("/", app.Home)
 
 	// static assets
+	fileServer := http.FileServer(http.Dir("./static/"))
+	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	return mux
 }
