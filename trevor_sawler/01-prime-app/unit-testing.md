@@ -1,3 +1,8 @@
+# Learning Outcomes
+
+- Table Test
+- Test for output to the console window.
+
 ## Testing Commands
 
 - `go test .`

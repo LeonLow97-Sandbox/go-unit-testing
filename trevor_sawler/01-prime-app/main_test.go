@@ -1,6 +1,11 @@
 package main
 
-import "testing"
+import (
+	"io"
+	"os"
+	"strings"
+	"testing"
+)
 
 func Test_isPrime(t *testing.T) {
 	// Table Test (using struct)
@@ -27,4 +32,52 @@ func Test_isPrime(t *testing.T) {
 			t.Errorf("%s: expected %s but got %s", e.name, e.msg, msg)
 		}
 	}
+}
+
+// Test output that is written in the console
+func Test_prompt(t *testing.T) {
+	// save a copy of os.Stdout
+	oldOut := os.Stdout
+
+	// create a read and write pipe
+	r, w, _ := os.Pipe()
+
+	// set os.Stdout to our write pipe
+	os.Stdout = w
+
+	prompt()
+
+	// close the writer (prevent resource leak)
+	_ = w.Close()
+
+	// reset os.Stdout to what it was before
+	os.Stdout = oldOut
+
+	// read the output of the prompt() func from the read pipe
+	out, _ := io.ReadAll(r)
+
+	// perform the test
+	if string(out) != "-> " {
+		t.Errorf("Incorrect prompt: expected -> but got %s", string(out))
+	}
+}
+
+func Test_intro(t *testing.T) {
+		oldOut := os.Stdout
+
+		r, w, _ := os.Pipe()
+	
+		os.Stdout = w
+	
+		intro()
+	
+		_ = w.Close()
+	
+		os.Stdout = oldOut
+	
+		out, _ := io.ReadAll(r)
+	
+		if !strings.Contains(string(out), "Enter a whole number") {
+			t.Errorf("Intro text is incorrect; got %s", string(out))
+		}
 }
