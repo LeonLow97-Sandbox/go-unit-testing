@@ -6,9 +6,9 @@
 ## Testing Commands
 
 - `go test .`
-    - runs tests for Go packages.
+  - runs tests for Go packages.
 - `go test -v .`
-    - runs tests for Go packages and prints verbose output. 
+  - runs tests for Go packages and prints verbose output.
 
 ## Testing function naming convention
 
@@ -36,6 +36,23 @@ func Test_Add(t *testing.T) {
   - red: not covered
   - green: covered
 
+## Running Single Tests
 
+- `go test -run Test_isPrime`
+- `go test -v -run Test_isPrime`
+
+## Running Groups of Tests (Test Suites)
+
+- `go test -v -run Test_alpha`
+- Need to rename the test functions
+
+```
+=== RUN   Test_alpha_isPrime
+--- PASS: Test_alpha_isPrime (0.00s)
+=== RUN   Test_alpha_prompt
+--- PASS: Test_alpha_prompt (0.00s)
+PASS
+ok      primeapp        0.163s
+```
 
 
