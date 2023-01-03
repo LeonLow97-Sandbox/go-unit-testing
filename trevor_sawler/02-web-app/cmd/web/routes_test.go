@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
+// Testing to check if the route exists
 func Test_application_routes(t *testing.T) {
 	var registered = []struct {
 		route string
