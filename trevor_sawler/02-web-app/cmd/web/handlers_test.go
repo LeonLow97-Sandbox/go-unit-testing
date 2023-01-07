@@ -19,13 +19,15 @@ func Test_application_handlers(t *testing.T) {
 	var app application
 	routes := app.routes()
 
-	// create a test server
+	// create a test server (start a server as part of testing)
 	ts := httptest.NewTLSServer(routes)
 	defer ts.Close()
 
+	// inside cmd/web, go up 2 levels to reach the templates folder when running tests
 	pathToTemplates = "./../../templates/"
 
 	// range through test data
+	// ts.URL is the url that the test web server has and append to it the specified endpoint
 	for _, e := range theTests {
 		resp, err := ts.Client().Get(ts.URL + e.url)
 		if err != nil {
