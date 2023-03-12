@@ -27,3 +27,13 @@ func TestMain(m *testing.M) {
 
 - Must be exactly this name for the folder `testdata`.
 - This folder will be ignored when building the application. Use for testing data.
+
+# Testing POST Requests
+
+- Install Postgres with Docker
+- Connect our web app to Postgres
+- Add authentication to our application
+- Write some authentication middleware & test it
+- Write tests for authentication to our web application
+
+
