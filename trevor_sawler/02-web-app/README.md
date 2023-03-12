@@ -22,3 +22,8 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 ```
+
+## Creating a `testdata` folder
+
+- Must be exactly this name for the folder `testdata`.
+- This folder will be ignored when building the application. Use for testing data.
