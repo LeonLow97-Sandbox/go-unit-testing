@@ -17,7 +17,7 @@ func (app *application) ipFromContext(ctx context.Context) string {
 }
 
 func (app *application) addIPToContext(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r * http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// create a context
 		var ctx = context.Background()
 
@@ -60,4 +60,15 @@ func getIP(r *http.Request) (string, error) {
 	}
 
 	return ip, nil
+}
+
+func (app *application) auth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !app.Session.Exists(r.Context(), "user") {
+			app.Session.Put(r.Context(), "error", "Login in first!")
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }

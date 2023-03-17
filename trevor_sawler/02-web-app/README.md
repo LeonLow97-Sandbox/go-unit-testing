@@ -36,4 +36,6 @@ func TestMain(m *testing.M) {
 - Write some authentication middleware & test it
 - Write tests for authentication to our web application
 
+## Avoid testing cache
 
+- `go test -count=1`
