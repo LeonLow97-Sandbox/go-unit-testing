@@ -64,3 +64,19 @@ func TestMain(m *testing.M) {
 - Populate the database with empty tables.
 - Create tests for inserting, retrieving, updating and deleting.
 - Use `go://build` tags to separate our integration tests from unit tests.
+
+# Unit Tests vs Integration Tests
+
+| Unit Test | Integration Test |
+| :-------: | :--------------: |
+| Designed to test individual units or components of the software in isolation, such as function, a class, or a module.  |Designed to test how different components of the software interact with each other.            |
+|**Purpose**: to verify that each unit of the software is functioning as intended, without dependencies on other parts of the system.|**Purpose**: to verify that the components are integrated correctly and can communicate with each other as expected.|
+|Typically automated and run as part of the software development process.|Can be automated or performed manually and may involve testing multiple components or subsystems together.|
+
+## Using build tags to separate integration tests
+
+- `//go:build integration`
+  - include a specific tag on the top of the file before defining package.
+  - Ensure no spacing between `//` and `go`.
+- go test -v -tags=integration ./...
+  - have to specify `-tags=integration` to ensure that it tests the integration tests, otherwise it will not.
