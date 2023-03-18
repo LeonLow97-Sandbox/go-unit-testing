@@ -143,3 +143,61 @@ func TestPostgresDBRepoInsertUser(t *testing.T) {
 	}
 }
 
+func TestPostgresDBRepoAllUsers(t *testing.T) {
+	users, err := testRepo.AllUsers()
+	if err != nil {
+		t.Errorf("all users reports an error: %s", err)
+	}
+
+	if len(users) != 1 {
+		t.Errorf("all users reports wrong size; expected 1 but got %d", len(users))
+	}
+
+	testUser := data.User{
+		FirstName: "Leon",
+		LastName:  "Low",
+		Email:     "leon@low.com",
+		Password:  "secret",
+		IsAdmin:   1,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	_, _ = testRepo.InsertUser(testUser)
+
+	users, err = testRepo.AllUsers()
+	if err != nil {
+		t.Errorf("all users reports an error: %s", err)
+	}
+
+	if len(users) != 2 {
+		t.Errorf("all users reports wrong size after insert; expected 2 but got %d", len(users))
+	}
+}
+
+func TestPostgresDBRepoGetUser(t *testing.T) {
+	user, err := testRepo.GetUser(1)
+	if err != nil {
+		t.Errorf("error getting user by id: %s", err)
+	}
+
+	if user.Email != "admin@example.com" {
+		t.Errorf("wrong email returned by GetUser; expected admin@example.com but got %s", user.Email)
+	}
+
+	_, err = testRepo.GetUser(3)
+	if err == nil {
+		t.Error("no error reported when getting non-existent user by id")
+	}
+}
+
+func TestPostgresDBRepoGetUserByEmail(t *testing.T) {
+	user, err := testRepo.GetUserByEmail("leon@low.com")
+	if err != nil {
+		t.Errorf("error getting user by email: %s", err)
+	}
+
+	if user.ID != 2 {
+		t.Errorf("wrong id returned by GetUserByEmail; expected 2 but got %d", user.ID)
+	}
+}
