@@ -54,5 +54,13 @@ func TestMain(m *testing.M) {
 - By creating 2 separate repositories, can write unit tests without actually using a live database.
 - Test repository can simply return pre-determined results that simulate database interactions, which allows for faster and more reliable testing.
 - Can test our code quickly and reliably, without worrying about the state of the database or any potential issues that might arise.
+- Testing our code without database running in the background
 
+## Testing database
 
+- Spin up a Docker instance running postgres for the life of the tests.
+  - `go get -u github.com/ory/dockertest/v3`
+  - [dockertest](https://github.com/ory/dockertest)
+- Populate the database with empty tables.
+- Create tests for inserting, retrieving, updating and deleting.
+- Use `go://build` tags to separate our integration tests from unit tests.
