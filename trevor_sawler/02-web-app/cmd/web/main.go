@@ -6,21 +6,22 @@ import (
 	"log"
 	"net/http"
 	"webapp/pkg/data"
-	"webapp/pkg/db"
+	"webapp/pkg/repository"
+	"webapp/pkg/repository/dbrepo"
 
 	"github.com/alexedwards/scs/v2"
 )
 
 type application struct {
 	DSN     string
-	DB      db.PostgresConn
+	DB      repository.DatabaseRepo
 	Session *scs.SessionManager
 }
 
 func main() {
 	// Register data.User
 	gob.Register(data.User{})
-	
+
 	// set up an app config
 	app := application{}
 
@@ -33,7 +34,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	app.DB = db.PostgresConn{DB: conn}
+	app.DB = &dbrepo.PostgresDBRepo{DB: conn}
 
 	// get a session manager (session set up before app.routes() because it is calling the middleware app.Session.LoadAndSave)
 	app.Session = getSession()
