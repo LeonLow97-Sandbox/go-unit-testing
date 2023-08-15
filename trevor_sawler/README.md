@@ -54,3 +54,9 @@ func Test_Add(t *testing.T) {
 PASS
 ok      primeapp        0.163s
 ```
+
+# Testing File Uploads
+
+- A special case: POST requests that have files attached.
+- Allow users to upload a profile image.
+- Write tests that handle file uploads (2 ways).

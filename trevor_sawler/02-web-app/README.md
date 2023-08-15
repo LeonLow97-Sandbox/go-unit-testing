@@ -78,5 +78,5 @@ func TestMain(m *testing.M) {
 - `//go:build integration`
   - include a specific tag on the top of the file before defining package.
   - Ensure no spacing between `//` and `go`.
-- go test -v -tags=integration ./...
+- `go test -v -tags=integration ./...` (`cd ~/02-web-app/pkg/repository/dbrepo`)
   - have to specify `-tags=integration` to ensure that it tests the integration tests, otherwise it will not.
