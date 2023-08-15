@@ -60,3 +60,12 @@ ok      primeapp        0.163s
 - A special case: POST requests that have files attached.
 - Allow users to upload a profile image.
 - Write tests that handle file uploads (2 ways).
+
+# Testing REST APIs
+
+- Go is extremely popular for writing REST APIs
+- Use our existing code base to build a REST API
+- Implement JWT Authentication, including Refresh Tokens
+- Test JWT Logic
+- Build and test an authentication handler
+- Test validating tokens & refreshing tokens
