@@ -80,3 +80,9 @@ func TestMain(m *testing.M) {
   - Ensure no spacing between `//` and `go`.
 - `go test -v -tags=integration ./...` (`cd ~/02-web-app/pkg/repository/dbrepo`)
   - have to specify `-tags=integration` to ensure that it tests the integration tests, otherwise it will not.
+
+## Generating Expired Token with CLI
+
+- `cmd/cli`
+- `go run ./cmd/cli -action=expired`
+- Paste this expired token into `setup_test.go` file because this token is always expired.

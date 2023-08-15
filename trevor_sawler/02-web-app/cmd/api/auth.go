@@ -89,8 +89,8 @@ func (app *application) generateTokenPair(user *data.User) (TokenPairs, error) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["name"] = fmt.Sprintf("%s %s", user.FirstName, user.LastName)
 	claims["sub"] = fmt.Sprint(user.ID) // subject
-	claims["aud"] = app.Domain // audience
-	claims["iss"] = app.Domain // issuer
+	claims["aud"] = app.Domain          // audience
+	claims["iss"] = app.Domain          // issuer, automatically get assigned into claims.Issuer with we ParseWithClaims
 	if user.IsAdmin == 1 {
 		claims["admin"] = true
 	} else {
@@ -119,8 +119,8 @@ func (app *application) generateTokenPair(user *data.User) (TokenPairs, error) {
 		return TokenPairs{}, err
 	}
 
-	var tokenPairs = TokenPairs {
-		Token: signedAccessToken,
+	var tokenPairs = TokenPairs{
+		Token:        signedAccessToken,
 		RefreshToken: signedRefreshToken,
 	}
 
