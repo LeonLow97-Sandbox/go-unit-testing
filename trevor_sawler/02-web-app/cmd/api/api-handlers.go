@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"webapp/pkg/data"
 
+	"github.com/go-chi/chi"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -70,8 +72,8 @@ func (app *application) refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// If the calculated time remaining until the token expiration is greater
-	// than 30 seconds, 
-	if time.Unix(claims.ExpiresAt.Unix(), 0).Sub(time.Now()) > 30 * time.Second {
+	// than 30 seconds,
+	if time.Unix(claims.ExpiresAt.Unix(), 0).Sub(time.Now()) > 30*time.Second {
 		app.errorJSON(w, errors.New("refresh token does not need renewed yet"), http.StatusTooEarly)
 		return
 	}
@@ -97,15 +99,15 @@ func (app *application) refresh(w http.ResponseWriter, r *http.Request) {
 
 	// Setting cookie on browser for SPA
 	http.SetCookie(w, &http.Cookie{
-		Name: "__Host-refresh_token",
-		Path: "/",
-		Value: tokenPairs.RefreshToken,
-		Expires: time.Now().Add(refreshTokenExpiry),
-		MaxAge: int(refreshTokenExpiry.Seconds()),
+		Name:     "__Host-refresh_token",
+		Path:     "/",
+		Value:    tokenPairs.RefreshToken,
+		Expires:  time.Now().Add(refreshTokenExpiry),
+		MaxAge:   int(refreshTokenExpiry.Seconds()),
 		SameSite: http.SameSiteStrictMode,
-		Domain: "localhost",
+		Domain:   "localhost",
 		HttpOnly: true,
-		Secure: true,
+		Secure:   true,
 	})
 
 	// Also return json with tokens in case it is an API to API call
@@ -113,21 +115,79 @@ func (app *application) refresh(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) allUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := app.DB.AllUsers()
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
 
+	_ = app.writeJSON(w, http.StatusOK, users)
 }
 
 func (app *application) getUser(w http.ResponseWriter, r *http.Request) {
+	// get the userID from the url
+	userID, err := strconv.Atoi(chi.URLParam(r, "userID"))
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
 
+	user, err := app.DB.GetUser(userID)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	_ = app.writeJSON(w, http.StatusOK, user)
 }
 
 func (app *application) updateUser(w http.ResponseWriter, r *http.Request) {
+	var user data.User
+	err := app.readJSON(w, r, &user)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
 
+	err = app.DB.UpdateUser(user)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (app *application) deleteUser(w http.ResponseWriter, r *http.Request) {
+	// get the userID from the url
+	userID, err := strconv.Atoi(chi.URLParam(r, "userID"))
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
 
+	err = app.DB.DeleteUser(userID)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (app *application) insertUser(w http.ResponseWriter, r *http.Request) {
+	var user data.User
+	err := app.readJSON(w, r, &user)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
 
+	_, err = app.DB.InsertUser(user)
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
