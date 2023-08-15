@@ -69,3 +69,10 @@ ok      primeapp        0.163s
 - Test JWT Logic
 - Build and test an authentication handler
 - Test validating tokens & refreshing tokens
+
+# Testing An API for SPA
+
+- REST APIs are popular for Single Page Web apps (React, Vue, etc).
+- This requires secure storage of the JWT and refresh tokens.
+- We will write code that can be used with any kind of SPA.
+- Authentication handlers, refresh handlers, and protecting routes.

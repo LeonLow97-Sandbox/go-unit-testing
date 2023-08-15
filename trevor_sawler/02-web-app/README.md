@@ -67,11 +67,11 @@ func TestMain(m *testing.M) {
 
 # Unit Tests vs Integration Tests
 
-| Unit Test | Integration Test |
-| :-------: | :--------------: |
-| Designed to test individual units or components of the software in isolation, such as function, a class, or a module.  |Designed to test how different components of the software interact with each other.            |
-|**Purpose**: to verify that each unit of the software is functioning as intended, without dependencies on other parts of the system.|**Purpose**: to verify that the components are integrated correctly and can communicate with each other as expected.|
-|Typically automated and run as part of the software development process.|Can be automated or performed manually and may involve testing multiple components or subsystems together.|
+|                                                              Unit Test                                                               |                                                   Integration Test                                                   |
+| :----------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: |
+|        Designed to test individual units or components of the software in isolation, such as function, a class, or a module.         |                 Designed to test how different components of the software interact with each other.                  |
+| **Purpose**: to verify that each unit of the software is functioning as intended, without dependencies on other parts of the system. | **Purpose**: to verify that the components are integrated correctly and can communicate with each other as expected. |
+|                               Typically automated and run as part of the software development process.                               |      Can be automated or performed manually and may involve testing multiple components or subsystems together.      |
 
 ## Using build tags to separate integration tests
 

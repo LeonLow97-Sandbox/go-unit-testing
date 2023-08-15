@@ -17,6 +17,8 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
+// authenticate is the handler used to try to authenticate a user, and
+// send them a JWT token if successful.
 func (app *application) authenticate(w http.ResponseWriter, r *http.Request) {
 	var creds Credentials
 
@@ -48,10 +50,28 @@ func (app *application) authenticate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// send jwt token to user (with refresh token)
+	http.SetCookie(w, &http.Cookie{
+		Name:     "__Host-refresh_token",
+		Path:     "/",
+		Value:    tokenPairs.RefreshToken,
+		Expires:  time.Now().Add(refreshTokenExpiry),
+		MaxAge:   int(refreshTokenExpiry.Seconds()),
+		SameSite: http.SameSiteStrictMode,
+		Domain:   "localhost",
+		HttpOnly: true,
+		Secure:   false,
+	})
+
+	// send token to user
 	_ = app.writeJSON(w, http.StatusOK, tokenPairs)
 }
 
+// refresh is the handler called to request a new token pair, when
+// the jwt token has expired. We expect the refresh token to come
+// from a POST request. We validate it, look up the user in the db,
+// and if everything is good we send back a new token pair
+// as JSON. We also set an http only, secure cookie with the refresh
+// token stored inside.
 func (app *application) refresh(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
