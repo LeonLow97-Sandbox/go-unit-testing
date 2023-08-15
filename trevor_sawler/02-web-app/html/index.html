@@ -76,11 +76,27 @@
         let logoutBtn = document.getElementById("logout");
 
         document.addEventListener("DOMContentLoaded", function () {
-            // call refeshTokens; this will, by default, log the user in
-            // if he or she has a valid, non-expired __Host-refresh_token cookie.
+            // call refreshTokens; this will, by default, log the user in
+            // if he or she has a valid, non-expired leon-refresh_token cookie.
             refreshTokens();
         })
 
+        let refreshRunning = false;
+        let refreshTime = new Date();
+        let secondsRemaining = (600 - refreshTime.getSeconds()) * 1000; // every 10 minutes, it will refresh
+        // let secondsRemaining = (5 - refreshTime.getSeconds()) * 1000; // every 5 seconds, it will refresh
+
+        function autoRefresh() {
+            if (!refreshRunning) {
+                setTimeout(function () {
+                    if (access_token !== "") {
+                        setInterval(refreshTokens, 10 * 60 * 1000); // every 10 minutes
+                        // setInterval(refreshTokens, 5 * 1000); // every 5 seconds
+                    }
+                }, secondsRemaining);
+            }
+            refreshRunning = true;
+        }
 
         loginBtn.addEventListener("click", function () {
             const payload = {
@@ -105,12 +121,60 @@
                         access_token = data.access_token;
                         refresh_token = data.refresh_token;
                         setUI(true);
+                        autoRefresh();
                     }
                 })
                 .catch(error => {
                     alert(error);
                 })
         })
+
+        userBtn.addEventListener("click", function () {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Authorization", "Bearer " + access_token);
+
+            const requestOptions = {
+                method: "GET",
+                headers: myHeaders,
+            }
+
+            fetch("/users/1", requestOptions)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data) {
+                        userOutput.innerHTML = JSON.stringify(data, undefined, 4);
+                    }
+                })
+                .catch(err => {
+                    userOutput.innerHTML = "Log in first!";
+                })
+        })
+
+        function refreshTokens() {
+            // send a get request which includes the leon-refresh-token cookie if it exists
+            const requestOptions = {
+                method: "GET",
+                credentials: "include",
+            }
+
+            fetch(`/web/refresh-token`, requestOptions)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.access_token) {
+                        access_token = data.access_token;
+                        refresh_token = data.refresh_token;
+                        setUI(true);
+                        autoRefresh(); // already have a cookie that has not expired
+                    } else {
+                        setUI(false);
+                    }
+                })
+                .catch((error) => {
+                    console.log("user is not logged in")
+                })
+
+        }
 
         function setUI(loggedIn) {
             if (loggedIn) {
@@ -129,6 +193,19 @@
                 refreshTokenDisplay.innerHTML = "No refresh token!";
             }
         }
+
+        logoutBtn.addEventListener("click", function () {
+            access_token = "";
+            refresh_token = "";
+
+            fetch("/web/logout", { method: "GET" })
+                .then(response => {
+                    setUI(false);
+                })
+                .catch(error => {
+                    userOutput.innerHTML = error;
+                })
+        })
     </script>
 
 </body>
